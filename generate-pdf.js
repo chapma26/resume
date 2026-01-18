@@ -6,8 +6,26 @@ async function generatePDF() {
     const page = await browser.newPage();
     
     // Load the local HTML file
-    const filePath = path.join(__dirname, 'dist', 'pdf', 'index.html');
+    const filePath = path.join(__dirname, 'dist', 'index.html');
     await page.goto(`file://${filePath}`);
+    
+    // Add CSS to make contact items appear on separate lines for PDF
+    await page.addStyleTag({
+        content: `
+            .contact-info {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+            }
+            .contact-item {
+                display: block !important;
+                margin: 3px 0 !important;
+            }
+            .contact-separator {
+                display: none !important;
+            }
+        `
+    });
     
     // Generate PDF
     await page.pdf({
